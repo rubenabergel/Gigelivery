@@ -3,6 +3,7 @@ class Entry < ActiveRecord::Base
 
   require 'open-uri'
 
+# add url rss feed for other Craigslist cities
   CL_URL = [
     SOFT_JOB_NYC = "https://newyork.craigslist.org/search/mnh/sof?format=rss",
     SOFT_JOB_BROOKLYN = "https://newyork.craigslist.org/search/brk/sof?format=rss",
@@ -18,13 +19,22 @@ class Entry < ActiveRecord::Base
     FORHIRE = "https://www.reddit.com/r/forhire"
   ]
 
+  AUTHENTICJOB_URL = [
+    NYC_GIGS = "https://www.authenticjobs.com/rss/custom.php?location=NewYork"
+  ]
+
+  JOBSPRESSO_URL = [
+    REMOTE_SOFTWARE = "https://jobspresso.co/?feed=job_feed&job_types=developer&search_location&job_categories&search_keywords"
+    REMOTE_WEB = "https://jobspresso.co/?feed=job_feed&job_types=designer&search_location&job_categories&search_keywords"
+  ]
+
   def self.run_feed
-    cl_job
+    cl_job(Entry::CL_URL)
     reddit_job
   end
 
-  def self.cl_job
-    urls = Entry::CL_URL
+  def self.cl_job(urls)
+    urls = urls
     urls.each do |url|
       rss = Feedjira::Feed.fetch_and_parse url
       rss.entries.each do |entry|
