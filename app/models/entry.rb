@@ -16,20 +16,27 @@ class Entry < ActiveRecord::Base
   ]
 
   REDDIT_URL = [
-    FORHIRE = "https://www.reddit.com/r/forhire"
+    FORHIRE = "https://www.reddit.com/r/forhire",
   ]
 
   AUTHENTICJOB_URL = [
-    NYC_GIGS = "https://www.authenticjobs.com/rss/custom.php?location=NewYork"
+    NYC_GIGS = "https://www.authenticjobs.com/rss/custom.php?location=NewYork",
   ]
 
   JOBSPRESSO_URL = [
-    REMOTE_SOFTWARE = "https://jobspresso.co/?feed=job_feed&job_types=developer&search_location&job_categories&search_keywords"
-    REMOTE_WEB = "https://jobspresso.co/?feed=job_feed&job_types=designer&search_location&job_categories&search_keywords"
+    REMOTE_SOFTWARE = "https://jobspresso.co/?feed=job_feed&job_types=developer&search_location&job_categories&search_keywords",
+    REMOTE_WEB = "https://jobspresso.co/?feed=job_feed&job_types=designer&search_location&job_categories&search_keywords",
   ]
 
+  STACKOVERFLOW_URL = [
+    CONTRACT_SOFTWARE ="https://stackoverflow.com/jobs/feed?type=Contract",
+    PERMANENT_SOFTWARE = "https://stackoverflow.com/jobs/feed?type=Permanent",
+  ]
+
+  WORDPRESS_URL =
+
   def self.run_feed
-    cl_job(Entry::CL_URL)
+    cl_job(Entry::JOBSPRESSO_URL)
     reddit_job
   end
 
@@ -45,6 +52,7 @@ class Entry < ActiveRecord::Base
     end
   end
 
+
   def self.reddit_job
     doc = Nokogiri::HTML(open(Entry::FORHIRE))
     posts = doc.css(".link.self")
@@ -59,5 +67,15 @@ class Entry < ActiveRecord::Base
         obj.save
       end
   end
+
+  def self.weekly_posts
+    Entry.where(published: 1.week.ago..Date.today)
+  end
+
+  def self.today_post
+      Entry.where(published: Date.today)
+  end
+
+  
 
 end
